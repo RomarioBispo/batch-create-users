@@ -1,4 +1,4 @@
-package br.com.codevelopment.example.batch;
+package br.com.codevelopment.example;
 
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;

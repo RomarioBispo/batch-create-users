@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class Person {
 	
-	@Id()
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
@@ -23,6 +23,12 @@ public class Person {
 	
 	@Column
 	private String lastName;
+	
+	@Column
+	private String cpf;
+	
+	@Column
+	private String rg;
 	
 	@Column
 	private LocalDate birthDate;
