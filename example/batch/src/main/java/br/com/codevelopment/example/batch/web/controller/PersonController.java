@@ -1,8 +1,8 @@
 package br.com.codevelopment.example.batch.web.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ public class PersonController {
 		this.service = service;
 	}
 	
-	@GetMapping("/create/person/{number}")
+	@PostMapping("/create/person/{number}")
 	@ResponseStatus(code = HttpStatus.CREATED)
 	public void createPersons(@PathVariable int number) {
 		service.generatePerson(number);
