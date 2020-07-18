@@ -56,6 +56,25 @@
 		<artifactId>common</artifactId>
 		<version>${project.version}</version>
 	</dependency>
+<!-- 	dependencias do lightmin -->
+	<dependency>
+		<groupId>org.tuxdevelop</groupId>
+		<artifactId>spring-batch-lightmin-bom</artifactId>
+		<version>2.1.1</version>
+		<type>pom</type>
+		<scope>import</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.tuxdevelop</groupId>
+		<artifactId>spring-batch-lightmin-embedded</artifactId>
+		<version>2.0.3</version>
+	</dependency>
+	<dependency>
+		<groupId>org.tuxdevelop</groupId>
+		<artifactId>spring-batch-lightmin-repository-map</artifactId>
+		<version>2.1.1</version>
+	</dependency>
+<!-- 	dependencias do lightmin -->
 	</dependencies>
 	<build>
 		<plugins>

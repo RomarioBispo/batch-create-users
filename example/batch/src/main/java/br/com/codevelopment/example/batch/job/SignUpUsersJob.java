@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
+import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.listener.CompositeJobExecutionListener;
-import org.springframework.batch.core.listener.JobExecutionListenerSupport;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,14 +26,15 @@ import br.com.codevelopment.example.batch.listener.UserJobListener;
 import br.com.codevelopment.example.batch.processor.UserProcessor;
 import br.com.codevelopment.example.entity.Person;
 import br.com.codevelopment.example.entity.Student;
+import br.com.codevelopment.example.enums.JobParamsEnum;
 import br.com.codevelopment.example.repository.PersonRepository;
 import br.com.codevelopment.example.repository.StudentRepository;
 
 @Configuration
 public class SignUpUsersJob {
 	
-	public static final String STEP_NAME = "jobSignStudents";
-	public static final String JOB_NAME = "stepSignStudents";
+	public static final String STEP_NAME = "stepSignStudents";
+	public static final String JOB_NAME = "jobSignStudents";
 	
 	private JobBuilderFactory jobBuilderFactory;
 	
@@ -68,7 +73,18 @@ public class SignUpUsersJob {
 		sort.put("id", Sort.Direction.ASC);
 		return sort;
 	}
+	
+	@Bean
+	public JobParametersValidator validatorSignUpJob() {
 
+		// Adding the DATE_INCREMENTER parameter for enabling the rerun batches
+		String[] optionalParams = new String[] { JobParamsEnum.DATE_INCREMENTER.getName() };
+		String[] compulsoryParameters = new String[] { JobParamsEnum.YEAR.getName(), JobParamsEnum.SEMESTER.getName()};
+
+		return new DefaultJobParametersValidator(compulsoryParameters, optionalParams);
+	}
+
+	@StepScope
 	@Bean
 	public UserProcessor processor() {
 	  return new UserProcessor();
@@ -77,7 +93,7 @@ public class SignUpUsersJob {
 	@Bean 
 	public CompositeJobExecutionListener listeners() {
 		CompositeJobExecutionListener compositeListeners =  new CompositeJobExecutionListener();
-		compositeListeners.setListeners(Arrays.asList(new JobExecutionListenerSupport[]{new UserJobListener()}) );
+		compositeListeners.setListeners(Arrays.asList(new UserJobListener()) );
 		return compositeListeners;
 	}
 
@@ -89,12 +105,26 @@ public class SignUpUsersJob {
 		return w;
 	}
 	
+    @Bean
+    public Step deleteAllStudentsStep() {
+        return stepBuilderFactory.get("deleteAllStudentsStep")
+                .tasklet((contribution, chunkContext) -> {
+                	studentRepository.deleteAll();
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+    
 	@Bean
-	public Job signStudentsJob(Step stepSignStudents) {
+	public Job signStudentsJob(Step stepSignStudents, Step deleteAllStudentsStep, JobExecutionDecider decider ) {
 	  return jobBuilderFactory.get(JOB_NAME)
-	    .incrementer(new RunIdIncrementer())
-	    .listener(listeners())
-	    .flow(stepSignStudents)
+		.validator(validatorSignUpJob())
+		.incrementer(new RunIdIncrementer())
+		.listener(listeners())
+		.flow(stepSignStudents)
+	    .start(decider)
+	    		.on("EXECUTE").to(deleteAllStudentsStep).next(stepSignStudents)
+	    		.from(decider).on("DONT").end()
 	    .end()
 	    .build();
 	}
