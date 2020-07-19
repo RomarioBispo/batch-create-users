@@ -1,6 +1,9 @@
 # batch-create-users
 
-A simple project to run jobs using spring batch, this job read users from database postgres and sign up to semester.
+A simple project to run jobs using spring batch, this job read users from postgres database and sign up as students to semester.
+
+##Configuration
+Two profiles are available, spring's default and "pgsql". the default's one run at memory database. the second one run at postgresql database.
 
 ## Getting Started
 
