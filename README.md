@@ -7,7 +7,7 @@ Two profiles are available, spring's default and "pgsql". the default's one run 
 
 ## URL'S
  - GET localhost:9443/applications - Spring Batch Lightmin
- - POST localhost:9443/api/v1/create/person/{number} - endpoint to create persons to sign up
+ - POST localhost:9443/api/v1/create/person/{number} - endpoint to create persons to sign in
 
 ## Getting Started
 
