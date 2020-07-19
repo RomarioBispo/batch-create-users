@@ -5,6 +5,10 @@ A simple project to run jobs using spring batch, this job read users from postgr
 ## Configuration
 Two profiles are available, spring's default and "pgsql". the default's one run at memory database. the second one run at postgresql database.
 
+## URL'S
+ - GET localhost:9443/applications - Spring Batch Lightmin
+ - POST localhost:9443/api/v1/create/person/{number} - endpoint to create persons to signup
+
 ## Getting Started
 
 This project show features which a job configuration must have:
@@ -38,8 +42,8 @@ End with an example of getting some data out of the system or using it for a lit
 ## Built With
 
 - [Spring Boot](https://spring.io/projects/spring-boot) - The web framework used
-- [Spring Batch](https://spring.io/projects/spring-batch)
-- [Spring Batch lightmin](https://github.com/tuxdevelop/spring-batch-lightmin)
+- [Spring Batch](https://spring.io/projects/spring-batch) - The Batch framework used
+- [Spring Batch lightmin](https://github.com/tuxdevelop/spring-batch-lightmin) - To jobs Management tool 
 - [Maven](https://maven.apache.org/) - Dependency Management
 
 ## License
